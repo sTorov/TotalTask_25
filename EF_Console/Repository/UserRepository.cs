@@ -1,4 +1,5 @@
 ﻿using EF_Console.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EF_Console.Repository
 {
@@ -17,7 +18,7 @@ namespace EF_Console.Repository
         {
             using (var db = new AppContext())
             {
-                var deletedUser = db.Users.FirstOrDefault(u => u.Name == user.Name && u.Email == user.Email);
+                var deletedUser = db.Users.AsNoTracking().FirstOrDefault(u => u.Name == user.Name && u.Email == user.Email);
                 if(deletedUser != null)
                 {
                     db.Users.Remove(user);
