@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace EF_Console.Entity
+﻿namespace EF_Console.Entity
 {
     public class Book
     {
