@@ -36,7 +36,6 @@ namespace EF_Console.Tests.Repository
             var bookList = bookRepository.FindAll();
 
             Assert.IsNotNull(bookList);
-            CollectionAssert.IsNotEmpty(bookList);
             CollectionAssert.DoesNotContain(bookList, testBook);
 
             bookRepository.Add(testBook);

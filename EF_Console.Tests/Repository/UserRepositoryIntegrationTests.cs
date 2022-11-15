@@ -35,7 +35,6 @@ namespace EF_Console.Tests.Repository
             var userList = userRepository.FindAll();
 
             Assert.IsNotNull(userList);
-            CollectionAssert.IsNotEmpty(userList);
             CollectionAssert.DoesNotContain(userList, testUser);
             
             userRepository.Add(testUser);
