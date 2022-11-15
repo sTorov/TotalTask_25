@@ -1,4 +1,5 @@
 ﻿using EF_Console.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EF_Console.Repository
 {
@@ -17,7 +18,9 @@ namespace EF_Console.Repository
         {
             using(var db = new AppContext())
             {
-                var deletedBook = db.Books.FirstOrDefault(b => b.Title == book.Title && b.Year_of_issue == b.Year_of_issue);
+                var deletedBook = db.Books.AsNoTracking()
+                    .FirstOrDefault(b => b.Title == book.Title && b.Year_of_issue == b.Year_of_issue);
+
                 if(deletedBook != null)
                 {
                     db.Books.Remove(deletedBook);

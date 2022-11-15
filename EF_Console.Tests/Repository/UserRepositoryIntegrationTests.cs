@@ -22,6 +22,13 @@ namespace EF_Console.Tests.Repository
             testUser = new User { Name = "Test", Email = "test@email.com" };
         }
 
+        private int GetUserId(List<User> userList)
+        {
+            return userList.Where(u => u.Email == testUser.Email && u.Name == testUser.Name)
+                .Select(u => u.Id)
+                .First();
+        }
+
         [Test]
         public void Add_MustAddingNewUserInBase()
         {
@@ -34,9 +41,7 @@ namespace EF_Console.Tests.Repository
             userRepository.Add(testUser);
 
             userList = userRepository.FindAll();
-            testUser.Id = userList.Where(u => u.Email == testUser.Email && u.Name == testUser.Name)
-                .Select(u => u.Id)
-                .First();
+            testUser.Id = GetUserId(userList);
 
             CollectionAssert.Contains(userList, testUser);
 
@@ -52,10 +57,7 @@ namespace EF_Console.Tests.Repository
         {           
             userRepository.Add(testUser);
 
-            var userList = userRepository.FindAll();
-            testUser.Id = userList.Where(u => u.Email == testUser.Email && u.Name == testUser.Name)
-                .Select(u => u.Id)
-                .First();
+            testUser.Id = GetUserId(userRepository.FindAll()); 
 
             var findUser = userRepository.FindById(testUser.Id);
 
@@ -72,10 +74,7 @@ namespace EF_Console.Tests.Repository
         {
             userRepository.Add(testUser);
 
-            var userList = userRepository.FindAll();
-            testUser.Id = userList.Where(u => u.Email == testUser.Email && u.Name == testUser.Name)
-                .Select(u => u.Id)
-                .First();
+            testUser.Id = GetUserId(userRepository.FindAll());
 
             userRepository.UpdateUserNameById(testUser.Id, newName);
             var findUser = userRepository.FindById(testUser.Id);
