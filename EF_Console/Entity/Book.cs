@@ -23,5 +23,10 @@
             }
             return false;
         }
+
+        public override string ToString()
+        {
+            return $"{Title} - {Year_of_issue:d} Авторы: {string.Join(", ", Authors)}";
+        }
     }
 }
