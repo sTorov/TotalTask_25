@@ -65,23 +65,5 @@ namespace EF_Console
                 return false;
             }
         }
-
-        //static void Method()
-        //{
-        //    using(var db = new Context())
-        //    {
-        //        using (var trans = db.Database.BeginTransaction())
-        //        {
-        //            var user = new User { Id = 99, Email = "test", Name = "Test" };
-        //            db.Users.Add(user);
-
-        //            db.Database.ExecuteSqlInterpolated($"set identity_insert dbo.Users on;");
-        //            db.SaveChanges();
-        //            db.Database.ExecuteSqlInterpolated($"set identity_insert dbo.Users off;");
-
-        //            trans.Commit();
-        //        }
-        //    }
-        //}
     }
 }
