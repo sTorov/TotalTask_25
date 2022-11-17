@@ -12,7 +12,7 @@ namespace EF_Console.Configuration
         /// </summary>
         public static void DB_InitializationData()
         {
-            using (var context = new Context())
+            using (var context = new Context(ConnectionString.MAIN))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();

@@ -9,9 +9,16 @@ namespace EF_Console.Repository
     /// </summary>
     public class UserRepository : IUserRepository
     {
+        private string _connect;
+
+        public UserRepository(string connect)
+        {
+            _connect = connect;
+        }
+
         public int Add(User user)
         {
-            using(var db = new Context())
+            using(var db = new Context(_connect))
             {
                 db.Users.Add(user);
                 return db.SaveChanges();
@@ -20,7 +27,7 @@ namespace EF_Console.Repository
 
         public int Delete(User user)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 var deletedUser = db.Users.AsNoTracking().FirstOrDefault(u => u.Name == user.Name && u.Email == user.Email);
                 if(deletedUser != null)
@@ -35,7 +42,7 @@ namespace EF_Console.Repository
 
         public List<User> FindAll()
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Users.ToList();
             }
@@ -43,7 +50,7 @@ namespace EF_Console.Repository
 
         public User FindById(int id)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Users.FirstOrDefault(user => user.Id == id);
             }
@@ -51,7 +58,7 @@ namespace EF_Console.Repository
 
         public int GetIdByEmailAndName(string name, string email)
         {
-            using(var db = new Context())
+            using(var db = new Context(_connect))
             {
                 return db.Users.AsNoTracking()
                     .Where(u => u.Email == email && u.Name == name)
@@ -61,7 +68,7 @@ namespace EF_Console.Repository
 
         public int UpdateUserNameById(int id, string newName)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 var updatedUser = db.Users.FirstOrDefault(user => user.Id == id);
                 if(updatedUser != null)

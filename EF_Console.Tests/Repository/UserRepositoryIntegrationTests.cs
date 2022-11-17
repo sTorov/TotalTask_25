@@ -1,4 +1,5 @@
-﻿using EF_Console.Entity;
+﻿using EF_Console.Configuration;
+using EF_Console.Entity;
 using EF_Console.Repository;
 using NUnit.Framework;
 
@@ -7,13 +8,19 @@ namespace EF_Console.Tests.Repository
     [TestFixture]
     public class UserRepositoryIntegrationTests
     {
+        private readonly string testConnectionString = ConnectionString.TESTING;
         private User testUser;
         private UserRepository userRepository;
 
         [OneTimeSetUp]
         public void StartIniitialization()
         {
-            userRepository = new UserRepository();
+            userRepository = new UserRepository(testConnectionString);
+            using(var db = new Context(testConnectionString))
+            {
+                db.Database.EnsureDeleted();
+                db.Database.EnsureCreated();
+            }
         }
 
         [SetUp]

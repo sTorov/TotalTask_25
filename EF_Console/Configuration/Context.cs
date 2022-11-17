@@ -8,15 +8,21 @@ namespace EF_Console.Configuration
     /// </summary>
     public class Context : DbContext
     {
+        private string _connectionString;
+
         public DbSet<User> Users { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Genre> Genres { get; set; }
 
+        public Context(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=ASUS\SQLEXPRESS;Database=LibraryDB;" +
-                "Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer(_connectionString);
         }
     }
 }

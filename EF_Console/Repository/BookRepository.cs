@@ -9,9 +9,16 @@ namespace EF_Console.Repository
     /// </summary>
     public class BookRepository : IBookRepository
     {
+        private string _connect;
+
+        public BookRepository(string connect)
+        {
+            _connect = connect;
+        }
+
         public int Add(Book book)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 db.Books.Add(book);
                 return db.SaveChanges();
@@ -20,7 +27,7 @@ namespace EF_Console.Repository
 
         public int CountByAuthor(Author author)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Books
                         .Where(b => b.Authors.Any(a => a == author)).Count();
@@ -29,7 +36,7 @@ namespace EF_Console.Repository
 
         public int Delete(Book book)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 var deletedBook = db.Books.AsNoTracking()
                     .FirstOrDefault(b => b.Title == book.Title && b.Year_of_issue == b.Year_of_issue);
@@ -46,7 +53,7 @@ namespace EF_Console.Repository
 
         public List<Book> FindAll()
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Books.ToList();
             }
@@ -54,7 +61,7 @@ namespace EF_Console.Repository
 
         public Book FindById(int id)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Books.FirstOrDefault(book => book.Id == id);
             }
@@ -62,7 +69,7 @@ namespace EF_Console.Repository
 
         public List<Book> GetListByGenreAndYear(Genre genre, DateTime fromYear, DateTime toYear)
         {
-            using (var context = new Context())
+            using (var context = new Context(_connect))
             {
                 return context.Books
                             .Include(b => b.Genres).Include(b => b.Authors)
@@ -75,7 +82,7 @@ namespace EF_Console.Repository
 
         public int GetIdByTitleAndYear(string title, DateTime date)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Books.AsNoTracking().
                     Where(b => b.Title == title && b.Year_of_issue == date)
@@ -85,7 +92,7 @@ namespace EF_Console.Repository
 
         public int UpdateYearOfIssueById(int id, DateTime date)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 var updatedBook = db.Books.FirstOrDefault(book => book.Id == id);
                 if (updatedBook != null)
@@ -100,7 +107,7 @@ namespace EF_Console.Repository
 
         public int CountByGenre(Genre genre)
         {
-            using (var context = new Context())
+            using (var context = new Context(_connect))
             {
                 return context.Books
                     .Where(b => b.Genres.Any(g => g == genre))
@@ -110,7 +117,7 @@ namespace EF_Console.Repository
 
         public bool CheckByAuthorAndTitle(Author author, string title)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Books.Any(b => b.Authors.Any(a => a == author) && b.Title == title);
             }
@@ -118,7 +125,7 @@ namespace EF_Console.Repository
 
         public int CountByUserId(User user)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Books.Where(b => b.UserId == user.Id).Count();
             }
@@ -126,7 +133,7 @@ namespace EF_Console.Repository
 
         public Book GetByMaxYear()
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Books.Include(b => b.Authors)
                     .First(b => b.Year_of_issue == db.Books.Max(b => b.Year_of_issue));
@@ -135,7 +142,7 @@ namespace EF_Console.Repository
 
         public List<Book> FindAllOrderByTitle()
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Books.Include(b => b.Authors)
                     .OrderBy(b => b.Title).ToList();
@@ -144,7 +151,7 @@ namespace EF_Console.Repository
 
         public List<Book> FindAllOrderByDiscendingByYear()
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Books.Include(b => b.Authors)
                     .OrderByDescending(b => b.Year_of_issue).ToList();
@@ -153,7 +160,7 @@ namespace EF_Console.Repository
 
         public Book FindByTitle(string title)
         {
-            using(var db = new Context())
+            using(var db = new Context(_connect))
             {
                 return db.Books.FirstOrDefault(b => b.Title == title);
             }

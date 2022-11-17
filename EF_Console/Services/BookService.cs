@@ -1,4 +1,5 @@
-﻿using EF_Console.Entity;
+﻿using EF_Console.Configuration;
+using EF_Console.Entity;
 using EF_Console.Repository;
 
 namespace EF_Console.Services
@@ -8,6 +9,7 @@ namespace EF_Console.Services
     /// </summary>
     public class BookService
     {
+        private string _connect;
         private IAuthorRepository authorRepository;
         private IGenreRepository genreRepository;
         private IUserRepository userRepository;
@@ -16,12 +18,13 @@ namespace EF_Console.Services
         /// <summary>
         /// Конструктор сервиса книг
         /// </summary>
-        public BookService()
+        public BookService(string connect = ConnectionString.MAIN)
         {
-            authorRepository = new AuthorRepository();
-            genreRepository = new GenreRepository();
-            userRepository = new UserRepository();
-            bookRepository = new BookRepository();
+            _connect = connect;
+            authorRepository = new AuthorRepository(_connect);
+            genreRepository = new GenreRepository(_connect);
+            userRepository = new UserRepository(_connect);
+            bookRepository = new BookRepository(_connect);
         }
 
 

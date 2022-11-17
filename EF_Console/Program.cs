@@ -14,8 +14,8 @@ namespace EF_Console
         static void Main(string[] args)
         {
             if(!Start())
-                return;
-            
+                return;            
+
             var service = new BookService();
 
             service.GetBooksByGenreAndDate("Detective", 1950, 2001, true);

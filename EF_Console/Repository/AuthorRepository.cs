@@ -9,9 +9,16 @@ namespace EF_Console.Repository
     /// </summary>
     public class AuthorRepository : IAuthorRepository
     {
+        private string _connect;
+
+        public AuthorRepository(string connect)
+        {
+            _connect = connect;
+        }
+
         public Author? FindByFullName(string firstName, string secondName, string lastName)
         {
-            using(var db = new Context())
+            using(var db = new Context(_connect))
             {
                 return db.Authors.AsNoTracking()
                     .FirstOrDefault(a => a.FirstName == firstName &&
@@ -22,7 +29,7 @@ namespace EF_Console.Repository
 
         public Author? FindById(int id)
         {
-            using (var db = new Context())
+            using (var db = new Context(_connect))
             {
                 return db.Authors.AsNoTracking()
                     .FirstOrDefault(a => a.Id == id);
