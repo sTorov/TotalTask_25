@@ -1,5 +1,4 @@
-﻿using EF_Console.Entity;
-using EF_Console.Services;
+﻿using EF_Console.Services;
 using EF_Console.Configuration;
 
 namespace EF_Console
@@ -8,37 +7,75 @@ namespace EF_Console
     {
         static void Main(string[] args)
         {
+            if(!Start())
+                return;
+            
             var service = new BookService();
 
+            service.GetBooksByGenreAndDate("Detective", 1950, 2001, true);
+
+            Console.WriteLine();
+            service.GetBooksCountByAuthor("Имя", "Фамилия", printResult: true);
+            service.GetBooksCountByAuthor(1, true);
+
+            Console.WriteLine();
+            service.GetBooksCountByGenre("Comedy", true);
+
+            Console.WriteLine();
+            service.CheckBookByTitleAndAuthor("Title_1", "Name1", "Surname1", "LastName1", true);
+
+            Console.WriteLine();
+            service.CheckUserIsBook(1, 2, true);
+
+            Console.WriteLine();
+            service.CountBooksOnUser(4, true);
+
+            Console.WriteLine();
+            service.NewestBook(true);
+
+            Console.WriteLine();
+            service.AllBooksOrderByTitle(true);
+
+            Console.WriteLine();
+            service.AllBookOrderByDiscendingDate(true);
+
+
+        }
+
+        /// <summary>
+        /// Вызов создания БД и инициализация в ней данных
+        /// </summary>
+        static bool Start()
+        {
             try
             {
                 InitialData.DB_InitializationData();
-
-                Helper.PrintBookList(service.GetBooksByGenreAndDate("Detective", 1950, 2001));
-
-                Console.WriteLine(service.GetBooksCountByAuthor("Имя", "Фамилия"));
-                Console.WriteLine(service.GetBooksCountByAuthor(1));
-
-                Console.WriteLine(service.GetBooksCountByGenre("Comedy"));
-
-                Console.WriteLine(service.CheckBookByTitleAndAuthor("Title_1", "Name1", "Surname1", "LastName1"));
-
-                Console.WriteLine(service.CheckUserIsBook(1, 2));
-
-                Console.WriteLine(service.CountBooksOnUser(4));
-
-                Console.WriteLine(service.NewestBook());
-
-                Console.WriteLine();
-                Helper.PrintBookList(service.AllBooksOrderByTitle());
-
-                Console.WriteLine();
-                Helper.PrintBookList(service.AllBookOrderByDiscendingDate());
+                return true;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Helper.ErrorPrint(e.Message);
+                Console.ReadKey();
+                return false;
             }
-        }        
+        }
+
+        //static void Method()
+        //{
+        //    using(var db = new Context())
+        //    {
+        //        using (var trans = db.Database.BeginTransaction())
+        //        {
+        //            var user = new User { Id = 99, Email = "test", Name = "Test" };
+        //            db.Users.Add(user);
+
+        //            db.Database.ExecuteSqlInterpolated($"set identity_insert dbo.Users on;");
+        //            db.SaveChanges();
+        //            db.Database.ExecuteSqlInterpolated($"set identity_insert dbo.Users off;");
+
+        //            trans.Commit();
+        //        }
+        //    }
+        //}
     }
 }

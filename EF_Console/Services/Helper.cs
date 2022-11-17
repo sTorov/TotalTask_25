@@ -1,24 +1,34 @@
-﻿using EF_Console.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EF_Console.Services
+﻿namespace EF_Console.Services
 {
+    /// <summary>
+    /// Класс с вспомогательным функционалом
+    /// </summary>
     public class Helper
     {
         /// <summary>
-        /// Вывод списка книг в консоль
+        /// Вывод списка в консоль
         /// </summary>
-        public static void PrintBookList(IEnumerable<Book> list)
+        public static void PrintList<T>(List<T> list, string title = null)
         {
-            if (list != null)
-                foreach (var book in list)
-                    Console.WriteLine(book);
+            if(title != null)
+                Console.WriteLine(title);
+
+            if (list != null && list.Count() > 0)
+                for(int i = 0; i < list.Count(); i++)
+                    Console.WriteLine($"  {i + 1}. {list[i]}");
             else
-                Console.WriteLine("Пусто");
+                Console.WriteLine("Список пуст!");
+        }
+
+        /// <summary>
+        /// Вывод сообщения об ошибке в консоль
+        /// </summary>
+        public static void ErrorPrint(string message)
+        {
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(message);
+            Console.ResetColor();
         }
     }
 }

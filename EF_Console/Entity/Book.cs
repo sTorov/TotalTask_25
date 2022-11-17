@@ -26,7 +26,7 @@
 
         public override string ToString()
         {
-            return $"{Title} - {Year_of_issue:d} Авторы: {string.Join(", ", Authors)}";
+            return $"{Title} - {Year_of_issue:d}г.\n\tАвторы: {string.Join(", ", Authors)}";
         }
     }
 }

@@ -26,7 +26,7 @@
 
         public override string ToString()
         {
-            return $"{SecondName} {FirstName} {LastName}";
+            return $"{SecondName} {FirstName} {LastName ?? "_"}";
         }
     }
 }

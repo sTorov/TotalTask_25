@@ -147,6 +147,14 @@ namespace EF_Console.Repository
                     .OrderByDescending(b => b.Year_of_issue).ToList();
             }
         }
+
+        public Book FindByTitle(string title)
+        {
+            using(var db = new Context())
+            {
+                return db.Books.FirstOrDefault(b => b.Title == title);
+            }
+        }
     }
 
     interface IBookRepository
@@ -157,6 +165,7 @@ namespace EF_Console.Repository
         List<Book> FindAllOrderByTitle();
         List<Book> FindAllOrderByDiscendingByYear();
         Book FindById(int id);
+        Book FindByTitle(string title);
         int CountByAuthor(Author author);
         int CountByGenre(Genre genre);
         int CountByUserId(User user);

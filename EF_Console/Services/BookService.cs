@@ -3,13 +3,19 @@ using EF_Console.Repository;
 
 namespace EF_Console.Services
 {
+    /// <summary>
+    /// Сервис книг
+    /// </summary>
     public class BookService
     {
-        private AuthorRepository authorRepository;
-        private GenreRepository genreRepository;
-        private UserRepository userRepository;
-        private BookRepository bookRepository;
+        private IAuthorRepository authorRepository;
+        private IGenreRepository genreRepository;
+        private IUserRepository userRepository;
+        private IBookRepository bookRepository;
 
+        /// <summary>
+        /// Конструктор сервиса книг
+        /// </summary>
         public BookService()
         {
             authorRepository = new AuthorRepository();
@@ -18,93 +24,271 @@ namespace EF_Console.Services
             bookRepository = new BookRepository();
         }
 
-        public List<Book> GetBooksByGenreAndDate(string genre_name, int fromYear, int toYear)
+
+        /// <summary>
+        /// Получение списка книг по жанру, выпущенных в определённый промежуток времени
+        /// </summary>
+        public List<Book> GetBooksByGenreAndDate(string genre_name, int fromYear, int toYear, bool printResult = false)
         {
-            var genre = genreRepository.FindByName(genre_name);
+            try
+            {
+                if (fromYear >= toYear)
+                    throw new Exception("GetBooksByGenreAndDate: Получены некорректыне данные!");
 
-            if (fromYear >= toYear || genre == null)
+                var genre = genreRepository.FindByName(genre_name);
+                if (genre == null)
+                    throw new Exception($"GetBooksByGenreAndDate: Жанр [{genre_name}] не найден!");
+
+                var bookList = bookRepository.GetListByGenreAndYear(genre, new DateTime(fromYear, 1, 1), new DateTime(toYear, 1, 1));
+
+                if(printResult)
+                    Helper.PrintList(bookList, $"Список книг жанра {genre_name} c {fromYear} по {toYear} годы:");
+
+                return bookList;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
                 return null;
-
-            return bookRepository.GetListByGenreAndYear(genre, new DateTime(fromYear, 1, 1), new DateTime(toYear, 1, 1));
+            }
         }
+
 
         #region BookCount
 
-        public int GetBooksCountByAuthor(int authorId)
+        /// <summary>
+        /// Получение количества книг, написанных определеённым автором, по его Id
+        /// </summary>
+        public int GetBooksCountByAuthor(int authorId, bool printResult = false)
         {
-            var author = authorRepository.FindById(authorId);
+            try
+            {
+                var author = authorRepository.FindById(authorId);
+                if (author == null)
+                    throw new Exception($"GetBooksCountByAuthor: Автора с Id [{authorId}] не существует!");
 
-            if(author == null)
+                var bookCount = bookRepository.CountByAuthor(author);
+
+                if (printResult)
+                    Console.WriteLine($"{author.SecondName} {author.FirstName} {author.LastName ?? "_"}" +
+                        $" написал книг: {bookCount}");
+
+                return bookCount;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
                 return 0;
-
-            return bookRepository.CountByAuthor(author);
+            }
         }
 
-        public int GetBooksCountByAuthor(string firstName, string secondName, string lastName = null)
+        /// <summary>
+        /// Получение количества книг, написанных определеённым автором, по его полному имени
+        /// </summary>
+        public int GetBooksCountByAuthor(string firstName, string secondName, string lastName = null, bool printResult = false)
         {
-            var author = authorRepository.FindByFullName(firstName, secondName, lastName);
+            try
+            {
+                var author = authorRepository.FindByFullName(firstName, secondName, lastName);
+                if (author == null)
+                    throw new Exception($"GetBooksCountByAuthor: Автора [{secondName} {firstName} {lastName ?? "_"}] не существует!");
 
-            if (author == null)
+                var bookCount = bookRepository.CountByAuthor(author);
+
+                if (printResult)
+                    Console.WriteLine($"{author.SecondName} {author.FirstName} {author.LastName ?? "_"}" +
+                        $" написал книг: {bookCount}");
+
+                return bookCount;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
                 return 0;
-
-            return bookRepository.CountByAuthor(author);
+            }
         }
 
         #endregion
 
-        public int GetBooksCountByGenre(string genre_name)
-        {
-            var genre = genreRepository.FindByName(genre_name);
 
-            if (genre == null)
+        /// <summary>
+        /// Получение количества книг определённого жанра
+        /// </summary>
+        public int GetBooksCountByGenre(string genre_name, bool printResult = false)
+        {
+            try
+            {
+                var genre = genreRepository.FindByName(genre_name);
+
+                if (genre == null)
+                    throw new Exception($"GetBooksCountByGenre: Жанр [{genre_name}] не найден!");
+
+                int bookCount = bookRepository.CountByGenre(genre);
+
+                if(printResult)
+                    Console.WriteLine($"Количество книг жанра {genre_name}: {bookCount}");
+
+                return bookCount;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
                 return 0;
-
-            return bookRepository.CountByGenre(genre);
+            }
         }
 
-        public bool CheckBookByTitleAndAuthor(string title, string firstName, string secondName, string lastName = null)
+        /// <summary>
+        /// Проверка автора книги
+        /// </summary>
+        public bool CheckBookByTitleAndAuthor(string title, string firstName, string secondName, string lastName = null, bool printResult = false)
         {
-            var author = authorRepository.FindByFullName(firstName, secondName, lastName);
+            try
+            {
+                if (bookRepository.FindByTitle(title) == null)
+                    throw new Exception($"CheckBookByTitleAndAuthor: Книга [{title}] не найдена!");
 
-            if (author == null)
+                var author = authorRepository.FindByFullName(firstName, secondName, lastName);
+
+                if (author == null)
+                    throw new Exception($"CheckBookByTitleAndAuthor: " +
+                        $"Автор [{secondName} {firstName} {lastName ?? "_"}] не найден!");
+
+                var check = bookRepository.CheckByAuthorAndTitle(author, title);
+
+                if(printResult)
+                    Console.WriteLine($"Проверка: Автор -> Книга\n{secondName} {firstName} {lastName} ->  {title}  >>  Результат: {check}");
+
+                return check;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
                 return false;
-
-            return bookRepository.CheckByAuthorAndTitle(author, title);
+            }
         }
 
-        public bool CheckUserIsBook(int userId, int bookId)
+        /// <summary>
+        /// Проверка наличия у пользователя книги
+        /// </summary>
+        public bool CheckUserIsBook(int userId, int bookId, bool printResult = false)
         {
-            var user = userRepository.FindById(userId);
+            try
+            {
+                var user = userRepository.FindById(userId);
+                if (user == null)
+                    throw new Exception($"CheckUserIsBook: Пользователь с Id [{userId}] не найден!");
 
-            if (user == null)
+                var book = bookRepository.FindById(bookId);
+                if(book == null)
+                    throw new Exception($"CheckUserIsBook: Книга с Id [{bookId}] не найдена!");
+
+                var check = book.UserId == user.Id;
+
+                if(printResult)
+                    Console.WriteLine($"Проверка: Пользователь -> Книга\n{user.Name} ->  {book.Title}  >>  Результат: {check}");
+
+                return check;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
                 return false;
-
-            return bookRepository.FindById(bookId).UserId == user.Id;
+            }
         }
 
-        public int CountBooksOnUser(int userId)
+        /// <summary>
+        /// Получение количества книг у пользователя
+        /// </summary>
+        public int CountBooksOnUser(int userId, bool printResult = false)
         {
-            var user = userRepository.FindById(userId);
+            try
+            {
+                var user = userRepository.FindById(userId);
 
-            if (user == null)
+                if (user == null)
+                    throw new Exception($"CountBooksOnUser: Пользователь с Id [{userId}] не найден!");
+
+                int count = bookRepository.CountByUserId(user);
+
+                if(printResult)
+                    Console.WriteLine($"Количество книг у пользователя {user.Name}: {count}");
+
+                return count;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
                 return 0;
-
-            return bookRepository.CountByUserId(user);
+            }
         }
 
-        public Book NewestBook()
+        /// <summary>
+        /// Получение книги, выпущеной позденее всех
+        /// </summary>
+        public Book NewestBook(bool printResult = false)
         {
-            return bookRepository.GetByMaxYear();
+            try
+            {
+                var book = bookRepository.GetByMaxYear();
+                if (book == null)
+                    throw new Exception("NewestBook: Ошибка при получении книги!");
+
+                if (printResult)
+                    Console.WriteLine($"Самая новая книга:\n{book}");
+
+                return book;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
+                return null;
+            }
         }
 
-        public List<Book> AllBooksOrderByTitle()
+        /// <summary>
+        /// Получение списка всех книг, отсортированных по названии в порядке возрастания
+        /// </summary>
+        public List<Book> AllBooksOrderByTitle(bool printResult = false)
         {
-            return bookRepository.FindAllOrderByTitle();
+            try
+            {
+                var bookList = bookRepository.FindAllOrderByTitle();
+                if(bookList == null)
+                    throw new Exception($"AllBooksOrderByTitle: Ошибка при получении списка книг!");
+
+                if (printResult)
+                    Helper.PrintList(bookList, "Все книги, сортировка по назнанию - возрастание:");
+
+                return bookList;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
+                return null;
+            }
         }
 
-        public List<Book> AllBookOrderByDiscendingDate()
+        /// <summary>
+        /// Получение списка всех книг, отсортированных по дате издания в порядке убывания
+        /// </summary>
+        public List<Book> AllBookOrderByDiscendingDate(bool printResult = false)
         {
-            return bookRepository.FindAllOrderByDiscendingByYear();
+            try
+            {
+                var bookList = bookRepository.FindAllOrderByDiscendingByYear();
+                if (bookList == null)
+                    throw new Exception("AllBookOrderByDiscendingDate: ");
+
+                if (printResult)
+                    Helper.PrintList(bookList, "Все книги, сортировка по дате издания - убывание:");
+
+                return bookList;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
+                return null;
+            }
         }
     }
 }
