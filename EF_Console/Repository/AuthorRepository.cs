@@ -1,4 +1,5 @@
 ﻿using EF_Console.Entity;
+using EF_Console.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 namespace EF_Console.Repository
@@ -7,7 +8,7 @@ namespace EF_Console.Repository
     {
         public Author? FindByFullName(string firstName, string secondName, string lastName)
         {
-            using(var db = new AppContext())
+            using(var db = new Context())
             {
                 return db.Authors.AsNoTracking()
                     .FirstOrDefault(a => a.FirstName == firstName &&
@@ -18,7 +19,7 @@ namespace EF_Console.Repository
 
         public Author? FindById(int id)
         {
-            using (var db = new AppContext())
+            using (var db = new Context())
             {
                 return db.Authors.AsNoTracking()
                     .FirstOrDefault(a => a.Id == id);

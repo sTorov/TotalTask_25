@@ -22,14 +22,6 @@ namespace EF_Console.Tests.Repository
             testBook = new Book { Title = "Test", Year_of_issue = new DateTime(2000, 12, 12) };
         }
 
-        private int GetBookId(List<Book> bookList)
-        {
-            return bookList.Where(b => b.Title == testBook.Title &&
-                    b.Year_of_issue == testBook.Year_of_issue)
-                .Select(u => u.Id)
-                .First();
-        }
-
         [Test]
         public void Add_MustAddingNewBookInBase()
         {
@@ -41,7 +33,7 @@ namespace EF_Console.Tests.Repository
             bookRepository.Add(testBook);
 
             bookList = bookRepository.FindAll();
-            testBook.Id = GetBookId(bookList);
+            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook);
 
             CollectionAssert.Contains(bookList, testBook);
 
@@ -57,7 +49,7 @@ namespace EF_Console.Tests.Repository
         {
             bookRepository.Add(testBook);
 
-            testBook.Id = GetBookId(bookRepository.FindAll());
+            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook);
 
             var findUser = bookRepository.FindById(testBook.Id);
 
@@ -76,7 +68,7 @@ namespace EF_Console.Tests.Repository
 
             bookRepository.Add(testBook);
 
-            testBook.Id = GetBookId(bookRepository.FindAll());
+            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook);
 
             bookRepository.UpdateYearOfIssueById(testBook.Id, newDate);
             var findBook = bookRepository.FindById(testBook.Id);

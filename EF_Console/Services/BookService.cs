@@ -1,6 +1,5 @@
 ﻿using EF_Console.Entity;
 using EF_Console.Repository;
-using Microsoft.EntityFrameworkCore;
 
 namespace EF_Console.Services
 {
@@ -19,20 +18,14 @@ namespace EF_Console.Services
             bookRepository = new BookRepository();
         }
 
-        public List<Book> GetBooksByGenreAndDate(string genre, int fromYear, int toYear)
+        public List<Book> GetBooksByGenreAndDate(string genre_name, int fromYear, int toYear)
         {
-            if (fromYear >= toYear || genreRepository.FindByName(genre) == null)
+            var genre = genreRepository.FindByName(genre_name);
+
+            if (fromYear >= toYear || genre == null)
                 return null;
 
-            using (var context = new AppContext())
-            {
-                return context.Books
-                            .Include(b => b.Genres).Include(b => b.Authors)
-                                .Where(b => b.Genres.Any(g => g.Genre_name == genre) &&
-                                    b.Year_of_issue >= new DateTime(fromYear, 1, 1) &&
-                                    b.Year_of_issue <= new DateTime(toYear, 1, 1))
-                                .ToList();
-            }            
+            return bookRepository.GetListByGenreAndYear(genre, new DateTime(fromYear, 1, 1), new DateTime(toYear, 1, 1));
         }
 
         #region BookCount
@@ -44,7 +37,7 @@ namespace EF_Console.Services
             if(author == null)
                 return 0;
 
-            return BooksCountByAuthor(author);
+            return bookRepository.CountByAuthor(author);
         }
 
         public int GetBooksCountByAuthor(string firstName, string secondName, string lastName = null)
@@ -54,31 +47,19 @@ namespace EF_Console.Services
             if (author == null)
                 return 0;
 
-            return BooksCountByAuthor(author);
-        }
-
-        private int BooksCountByAuthor(Author author)
-        {
-            using (var context = new AppContext())
-            {
-                return context.Books
-                        .Where(b => b.Authors.Any(a => a == author)).Count();
-            }
+            return bookRepository.CountByAuthor(author);
         }
 
         #endregion
 
-        public int GetBooksCountByGenre(string genre)
+        public int GetBooksCountByGenre(string genre_name)
         {
-            if (genreRepository.FindByName(genre) == null)
+            var genre = genreRepository.FindByName(genre_name);
+
+            if (genre == null)
                 return 0;
 
-            using(var context = new AppContext())
-            {
-                return context.Books
-                    .Where(b => b.Genres.Any(g => g.Genre_name == genre))
-                    .Count();
-            }
+            return bookRepository.CountByGenre(genre);
         }
 
         public bool CheckBookByTitleAndAuthor(string title, string firstName, string secondName, string lastName = null)
@@ -88,56 +69,42 @@ namespace EF_Console.Services
             if (author == null)
                 return false;
 
-            using (var db = new AppContext())
-            {
-                return db.Books.Any(b => b.Authors.Any(a => a == author) && b.Title == title);
-            }
+            return bookRepository.CheckByAuthorAndTitle(author, title);
         }
 
         public bool CheckUserIsBook(int userId, int bookId)
         {
-            if (userRepository.FindById(userId) == null)
+            var user = userRepository.FindById(userId);
+
+            if (user == null)
                 return false;
 
-            return bookRepository.FindById(bookId).UserId == userId;
+            return bookRepository.FindById(bookId).UserId == user.Id;
         }
 
         public int CountBooksOnUser(int userId)
         {
-            if (userRepository.FindById(userId) == null)
+            var user = userRepository.FindById(userId);
+
+            if (user == null)
                 return 0;
 
-            using(var db = new AppContext())
-            {
-                return db.Books.Where(b => b.UserId == userId).Count();
-            }
+            return bookRepository.CountByUserId(user);
         }
 
         public Book NewestBook()
         {
-            using (var db = new AppContext())
-            {
-                return db.Books.Include(b => b.Authors)
-                    .First(b => b.Year_of_issue == db.Books.Max(b => b.Year_of_issue));
-            }
+            return bookRepository.GetByMaxYear();
         }
 
         public List<Book> AllBooksOrderByTitle()
         {
-            using(var db = new AppContext())
-            {
-                return db.Books.Include(b => b.Authors)
-                    .OrderBy(b => b.Title).ToList();
-            }
+            return bookRepository.FindAllOrderByTitle();
         }
 
         public List<Book> AllBookOrderByDiscendingDate()
         {
-            using(var db = new AppContext())
-            {
-                return db.Books.Include(b => b.Authors)
-                    .OrderByDescending(b => b.Year_of_issue).ToList();
-            }
+            return bookRepository.FindAllOrderByDiscendingByYear();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EF_Console.Entity;
+using EF_Console.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 namespace EF_Console.Repository
@@ -7,7 +8,7 @@ namespace EF_Console.Repository
     {
         public Genre? FindByName(string name)
         {
-            using(var db = new AppContext())
+            using(var db = new Context())
             {
                 return db.Genres.AsNoTracking().FirstOrDefault(g => g.Genre_name == name);
             }

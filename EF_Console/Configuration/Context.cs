@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using EF_Console.Entity;
 
-namespace EF_Console
+namespace EF_Console.Configuration
 {
-    public class AppContext : DbContext
+    public class Context : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Book> Books { get; set; }
