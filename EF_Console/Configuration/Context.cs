@@ -3,6 +3,9 @@ using EF_Console.Entity;
 
 namespace EF_Console.Configuration
 {
+    /// <summary>
+    /// Контекст БД
+    /// </summary>
     public class Context : DbContext
     {
         public DbSet<User> Users { get; set; }

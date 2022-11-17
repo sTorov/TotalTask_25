@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EF_Console.Repository
 {
+    /// <summary>
+    /// Репозиторий книги
+    /// </summary>
     public class BookRepository : IBookRepository
     {
         public int Add(Book book)
@@ -70,12 +73,12 @@ namespace EF_Console.Repository
             }
         }
 
-        public int GetIdByTitleAndYear(Book book)
+        public int GetIdByTitleAndYear(string title, DateTime date)
         {
             using (var db = new Context())
             {
                 return db.Books.AsNoTracking().
-                    Where(b => b.Title == book.Title && b.Year_of_issue == b.Year_of_issue)
+                    Where(b => b.Title == title && b.Year_of_issue == date)
                     .Select(b => b.Id).FirstOrDefault();
             }
         }
@@ -157,22 +160,70 @@ namespace EF_Console.Repository
         }
     }
 
+    /// <summary>
+    /// Интерфейс репозитория книги
+    /// </summary>
     interface IBookRepository
     {
+        /// <summary>
+        /// Добавление новой книги в БД
+        /// </summary>
         int Add(Book book);
+        /// <summary>
+        /// Удаление книги из БД
+        /// </summary>
         int Delete(Book book);
+        /// <summary>
+        /// Получение списка всех книг
+        /// </summary>
         List<Book> FindAll();
+        /// <summary>
+        /// Получение списка всех книг, сортировка по названию - возрастание
+        /// </summary>
         List<Book> FindAllOrderByTitle();
+        /// <summary>
+        /// Получение списка всех книг, сортировка по году издания - убывание
+        /// </summary>
         List<Book> FindAllOrderByDiscendingByYear();
+        /// <summary>
+        /// Получение книги по Id
+        /// </summary>
         Book FindById(int id);
+        /// <summary>
+        /// Получение книги по названию
+        /// </summary>
         Book FindByTitle(string title);
+        /// <summary>
+        /// Получение количества книг, написанных указанным автором
+        /// </summary>
         int CountByAuthor(Author author);
+        /// <summary>
+        /// Получение количества книг указанного жанра
+        /// </summary>
         int CountByGenre(Genre genre);
+        /// <summary>
+        /// Получение количества книг, находящихся на руках у пользователя
+        /// </summary>
         int CountByUserId(User user);
+        /// <summary>
+        /// Проверка автора книги
+        /// </summary>
         bool CheckByAuthorAndTitle(Author author, string title);
-        int GetIdByTitleAndYear(Book book);
+        /// <summary>
+        /// Получение Id по названию книги и году выпуска
+        /// </summary>
+        int GetIdByTitleAndYear(string title, DateTime date);
+        /// <summary>
+        /// Получение книги, выпущеной позднее всех
+        /// </summary>
         Book GetByMaxYear();
+        /// <summary>
+        /// Получение списка книг по указанному жанру, выпущеных в определённый промежуток времени 
+        /// </summary>
         List<Book> GetListByGenreAndYear(Genre genre, DateTime fromYear, DateTime toYear);
+        /// <summary>
+        /// Обновление даты выпуска книги по Id
+        /// </summary>
         int UpdateYearOfIssueById(int id, DateTime date);
     }
 }

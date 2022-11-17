@@ -1,5 +1,8 @@
 ﻿namespace EF_Console.Entity
 {
+    /// <summary>
+    /// Сущность автора
+    /// </summary>
     public class Author
     {
         public int Id { get; set; }

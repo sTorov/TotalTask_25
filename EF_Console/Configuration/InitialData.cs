@@ -2,6 +2,9 @@
 
 namespace EF_Console.Configuration
 {
+    /// <summary>
+    /// Класс инициализации данных
+    /// </summary>
     public class InitialData
     {
         /// <summary>
@@ -17,12 +20,12 @@ namespace EF_Console.Configuration
                 var user1 = new User { Name = "Dima", Email = "dima@email.com" };
                 var user2 = new User { Name = "Kirill", Email = "kirill@email.com" };
                 var user3 = new User { Name = "Anton", Email = "a@email.com" };
-                var user4 = new User { Name = "User", Email = "user@email.com" };
+                var user4 = new User { Name = "Anna", Email = "user@email.com" };
 
                 context.Users.AddRange(user1, user2, user3, user4);
 
-                var book1 = new Book { Title = "Title_1", Year_of_issue = new DateTime(2000, 12, 1) };
-                var book2 = new Book { Title = "Название_2", Year_of_issue = new DateTime(1992, 4, 23) };
+                var book1 = new Book { Title = "Красивое название", Year_of_issue = new DateTime(2000, 12, 1) };
+                var book2 = new Book { Title = "Комедия", Year_of_issue = new DateTime(1992, 4, 23) };
                 var book3 = new Book { Title = "Очень старая книга", Year_of_issue = new DateTime(1966, 2, 23) };
                 var book4 = new Book { Title = "Не интересная книга", Year_of_issue = new DateTime(2022, 10, 1) };
 
@@ -33,8 +36,8 @@ namespace EF_Console.Configuration
 
                 context.Genres.AddRange(genre1, genre2);
 
-                var author1 = new Author { FirstName = "Name1", SecondName = "Surname1", LastName = "LastName1" };
-                var author2 = new Author { FirstName = "Имя", SecondName = "Фамилия" };
+                var author1 = new Author { FirstName = "Иван", SecondName = "Иванов", LastName = "Иванович" };
+                var author2 = new Author { FirstName = "Игорь", SecondName = "Петренко" };
 
                 context.Authors.AddRange(author1, author2);
 

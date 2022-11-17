@@ -1,5 +1,8 @@
 ﻿namespace EF_Console.Entity
 {
+    /// <summary>
+    /// Сущность жанра
+    /// </summary>
     public class Genre
     {
         public int Id { get; set; }

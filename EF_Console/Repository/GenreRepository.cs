@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EF_Console.Repository
 {
+    /// <summary>
+    /// Репозиторий жанра
+    /// </summary>
     public class GenreRepository : IGenreRepository
     {
         public Genre? FindByName(string name)
@@ -15,8 +18,14 @@ namespace EF_Console.Repository
         }
     }
 
+    /// <summary>
+    /// Интерфейс репозитория жанра
+    /// </summary>
     interface IGenreRepository
     {
-        Genre FindByName(string name);
+        /// <summary>
+        /// Получение жанра по названию
+        /// </summary>
+        Genre? FindByName(string name);
     }
 }

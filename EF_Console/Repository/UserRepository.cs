@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EF_Console.Repository
 {
+    /// <summary>
+    /// Репозиторий пользователя
+    /// </summary>
     public class UserRepository : IUserRepository
     {
         public int Add(User user)
@@ -46,12 +49,12 @@ namespace EF_Console.Repository
             }
         }
 
-        public int GetIdByEmailAndName(User user)
+        public int GetIdByEmailAndName(string name, string email)
         {
             using(var db = new Context())
             {
                 return db.Users.AsNoTracking()
-                    .Where(u => u.Email == user.Email && u.Name == user.Name)
+                    .Where(u => u.Email == email && u.Name == name)
                     .Select(u => u.Id).FirstOrDefault();
             }
         }
@@ -72,13 +75,34 @@ namespace EF_Console.Repository
         }
     }
 
+    /// <summary>
+    /// Интерфейс репозитория пользователя
+    /// </summary>
     interface IUserRepository
     {
+        /// <summary>
+        /// Получение пользователя по Id
+        /// </summary>
         User FindById(int id);
+        /// <summary>
+        /// Получение списка всех пользователей
+        /// </summary>
         List<User> FindAll();
+        /// <summary>
+        /// Добавление пользователя в БД
+        /// </summary>
         int Add(User user);
+        /// <summary>
+        /// Удаление пользователя из БД
+        /// </summary>
         int Delete(User user);
+        /// <summary>
+        /// Обновление имени пользователя по Id
+        /// </summary>
         int UpdateUserNameById(int id, string newName);
-        int GetIdByEmailAndName(User user);
+        /// <summary>
+        /// Получение Id по почтовому адресу и имени пользователя
+        /// </summary>
+        int GetIdByEmailAndName(string name, string email);
     }
 }

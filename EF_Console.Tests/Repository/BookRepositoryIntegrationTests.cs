@@ -33,7 +33,7 @@ namespace EF_Console.Tests.Repository
             bookRepository.Add(testBook);
 
             bookList = bookRepository.FindAll();
-            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook);
+            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook.Title, testBook.Year_of_issue);
 
             CollectionAssert.Contains(bookList, testBook);
 
@@ -49,7 +49,7 @@ namespace EF_Console.Tests.Repository
         {
             bookRepository.Add(testBook);
 
-            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook);
+            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook.Title, testBook.Year_of_issue);
 
             var findUser = bookRepository.FindById(testBook.Id);
 
@@ -68,7 +68,7 @@ namespace EF_Console.Tests.Repository
 
             bookRepository.Add(testBook);
 
-            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook);
+            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook.Title, testBook.Year_of_issue);
 
             bookRepository.UpdateYearOfIssueById(testBook.Id, newDate);
             var findBook = bookRepository.FindById(testBook.Id);

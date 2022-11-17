@@ -1,5 +1,8 @@
 ﻿namespace EF_Console.Entity
 {
+    /// <summary>
+    /// Сущность пользователя
+    /// </summary>
     public class User
     {
         public int Id { get; set; }

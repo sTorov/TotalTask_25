@@ -33,7 +33,7 @@ namespace EF_Console.Tests.Repository
             userRepository.Add(testUser);
 
             userList = userRepository.FindAll();
-            testUser.Id = userRepository.GetIdByEmailAndName(testUser);
+            testUser.Id = userRepository.GetIdByEmailAndName(testUser.Name, testUser.Email);
 
             CollectionAssert.Contains(userList, testUser);
 
@@ -49,7 +49,7 @@ namespace EF_Console.Tests.Repository
         {           
             userRepository.Add(testUser);
 
-            testUser.Id = userRepository.GetIdByEmailAndName(testUser); 
+            testUser.Id = userRepository.GetIdByEmailAndName(testUser.Name, testUser.Email); 
 
             var findUser = userRepository.FindById(testUser.Id);
 
@@ -66,7 +66,7 @@ namespace EF_Console.Tests.Repository
         {
             userRepository.Add(testUser);
 
-            testUser.Id = userRepository.GetIdByEmailAndName(testUser);
+            testUser.Id = userRepository.GetIdByEmailAndName(testUser.Name, testUser.Email);
 
             userRepository.UpdateUserNameById(testUser.Id, newName);
             var findUser = userRepository.FindById(testUser.Id);

@@ -3,8 +3,14 @@ using EF_Console.Configuration;
 
 namespace EF_Console
 {
+    /// <summary>
+    /// Основной класс
+    /// </summary>
     class Program
     {
+        /// <summary>
+        /// Основной метод
+        /// </summary>
         static void Main(string[] args)
         {
             if(!Start())
@@ -15,14 +21,14 @@ namespace EF_Console
             service.GetBooksByGenreAndDate("Detective", 1950, 2001, true);
 
             Console.WriteLine();
-            service.GetBooksCountByAuthor("Имя", "Фамилия", printResult: true);
+            service.GetBooksCountByAuthor("Игорь", "Петренко", printResult: true);
             service.GetBooksCountByAuthor(1, true);
 
             Console.WriteLine();
             service.GetBooksCountByGenre("Comedy", true);
 
             Console.WriteLine();
-            service.CheckBookByTitleAndAuthor("Title_1", "Name1", "Surname1", "LastName1", true);
+            service.CheckBookByTitleAndAuthor("Красивое название", "Иван", "Иванов", "Иванович", true);
 
             Console.WriteLine();
             service.CheckUserIsBook(1, 2, true);
@@ -43,7 +49,7 @@ namespace EF_Console
         }
 
         /// <summary>
-        /// Вызов создания БД и инициализация в ней данных
+        /// Вызов создания БД и инициализации в ней данных
         /// </summary>
         static bool Start()
         {

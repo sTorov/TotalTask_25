@@ -1,5 +1,8 @@
 ﻿namespace EF_Console.Entity
 {
+    /// <summary>
+    /// Сущность книги
+    /// </summary>
     public class Book
     {
         public int Id { get; set; }

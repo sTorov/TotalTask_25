@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EF_Console.Repository
 {
+    /// <summary>
+    /// Репозиторий автора
+    /// </summary>
     public class AuthorRepository : IAuthorRepository
     {
         public Author? FindByFullName(string firstName, string secondName, string lastName)
@@ -27,9 +30,18 @@ namespace EF_Console.Repository
         }
     }
 
+    /// <summary>
+    /// Интерфейс репозитория автора
+    /// </summary>
     interface IAuthorRepository
     {
-        Author FindByFullName(string firstName, string secondName, string lastName);
-        Author FindById(int id);
+        /// <summary>
+        /// Получение автора по полному имени 
+        /// </summary>
+        Author? FindByFullName(string firstName, string secondName, string lastName);
+        /// <summary>
+        /// Получение автора по Id
+        /// </summary>
+        Author? FindById(int id);
     }
 }
