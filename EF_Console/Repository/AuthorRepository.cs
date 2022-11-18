@@ -7,13 +7,56 @@ namespace EF_Console.Repository
     /// <summary>
     /// Репозиторий автора
     /// </summary>
-    public class AuthorRepository : IAuthorRepository
+    public class AuthorRepository : IAuthorRepository, IRepository<Author>
     {
         private string _connect;
 
         public AuthorRepository(string connect)
         {
             _connect = connect;
+        }
+
+        public int Add(Author author)
+        {
+            using(var db = new Context(_connect))
+            {
+                db.Authors.Add(author);
+                db.SaveChanges();
+
+                return db.Authors.AsNoTracking().
+                        Where(a => a.FirstName == author.FirstName &&
+                                a.SecondName == author.SecondName &&
+                                a.LastName == author.LastName)
+                        .Select(a => a.Id)
+                        .FirstOrDefault();
+            }
+        }
+
+        public int Delete(Author author)
+        {
+            using(var db = new Context(_connect))
+            {
+                var findAuthor = db.Authors.AsNoTracking()
+                    .FirstOrDefault(a => a.FirstName == author.FirstName &&
+                                        a.SecondName == author.SecondName &&
+                                        a.LastName == author.LastName);
+
+                if(findAuthor != null)
+                {
+                    db.Authors.Remove(findAuthor);
+                    return db.SaveChanges();
+                }
+
+                return 0;
+            }
+        }
+
+        public List<Author> FindAll()
+        {
+            using(var db = new Context(_connect))
+            {
+                return db.Authors.ToList();
+            }
         }
 
         public Author? FindByFullName(string firstName, string secondName, string lastName)
@@ -46,9 +89,5 @@ namespace EF_Console.Repository
         /// Получение автора по полному имени 
         /// </summary>
         Author? FindByFullName(string firstName, string secondName, string lastName);
-        /// <summary>
-        /// Получение автора по Id
-        /// </summary>
-        Author? FindById(int id);
     }
 }

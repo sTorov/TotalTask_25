@@ -10,10 +10,10 @@ namespace EF_Console.Services
     public class BookService
     {
         private string _connect;
-        private IAuthorRepository authorRepository;
-        private IGenreRepository genreRepository;
-        private IUserRepository userRepository;
-        private IBookRepository bookRepository;
+        private AuthorRepository authorRepository;
+        private GenreRepository genreRepository;
+        private UserRepository userRepository;
+        private BookRepository bookRepository;
 
         /// <summary>
         /// Конструктор сервиса книг

@@ -8,7 +8,7 @@ namespace EF_Console.Repository
     /// <summary>
     /// Репозиторий книги
     /// </summary>
-    public class BookRepository : IBookRepository
+    public class BookRepository : IBookRepository, IRepository<Book>
     {
         private string _connect;
 
@@ -66,7 +66,7 @@ namespace EF_Console.Repository
             }
         }
 
-        public Book FindById(int id)
+        public Book? FindById(int id)
         {
             using (var db = new Context(_connect))
             {
@@ -82,7 +82,7 @@ namespace EF_Console.Repository
                             .Include(b => b.Genres).Include(b => b.Authors)
                                 .Where(b => b.Genres.Any(g => g == genre) &&
                                     b.Year_of_issue >= fromYear &&
-                                    b.Year_of_issue <= toYear)
+                                    b.Year_of_issue < toYear)
                                 .ToList();
             }
         }
@@ -170,19 +170,6 @@ namespace EF_Console.Repository
     interface IBookRepository
     {
         /// <summary>
-        /// Добавление новой книги в БД
-        /// </summary>
-        /// <returns>Возвращает Id добавленной книги</returns>
-        int Add(Book book);
-        /// <summary>
-        /// Удаление книги из БД
-        /// </summary>
-        int Delete(Book book);
-        /// <summary>
-        /// Получение списка всех книг
-        /// </summary>
-        List<Book> FindAll();
-        /// <summary>
         /// Получение списка всех книг, сортировка по названию - возрастание
         /// </summary>
         List<Book> FindAllOrderByTitle();
@@ -192,10 +179,6 @@ namespace EF_Console.Repository
         List<Book> FindAllOrderByDiscendingByYear();
         /// <summary>
         /// Получение книги по Id
-        /// </summary>
-        Book FindById(int id);
-        /// <summary>
-        /// Получение книги по названию
         /// </summary>
         Book FindByTitle(string title);
         /// <summary>

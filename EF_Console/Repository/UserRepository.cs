@@ -7,7 +7,7 @@ namespace EF_Console.Repository
     /// <summary>
     /// Репозиторий пользователя
     /// </summary>
-    public class UserRepository : IUserRepository
+    public class UserRepository : IUserRepository, IRepository<User>
     {
         private string _connect;
 
@@ -22,6 +22,7 @@ namespace EF_Console.Repository
             {
                 db.Users.Add(user);
                 db.SaveChanges();
+
                 return db.Users.AsNoTracking()
                         .Where(u => u.Email == user.Email)
                         .Select(u => u.Id)
@@ -33,7 +34,9 @@ namespace EF_Console.Repository
         {
             using (var db = new Context(_connect))
             {
-                var deletedUser = db.Users.AsNoTracking().FirstOrDefault(u => u.Name == user.Name && u.Email == user.Email);
+                var deletedUser = db.Users.AsNoTracking()
+                    .FirstOrDefault(u => u.Email == user.Email);
+
                 if(deletedUser != null)
                 {
                     db.Users.Remove(user);
@@ -52,7 +55,7 @@ namespace EF_Console.Repository
             }
         }
 
-        public User FindById(int id)
+        public User? FindById(int id)
         {
             using (var db = new Context(_connect))
             {
@@ -81,22 +84,6 @@ namespace EF_Console.Repository
     /// </summary>
     interface IUserRepository
     {
-        /// <summary>
-        /// Получение пользователя по Id
-        /// </summary>
-        User FindById(int id);
-        /// <summary>
-        /// Получение списка всех пользователей
-        /// </summary>
-        List<User> FindAll();
-        /// <summary>
-        /// Добавление пользователя в БД
-        /// </summary>
-        int Add(User user);
-        /// <summary>
-        /// Удаление пользователя из БД
-        /// </summary>
-        int Delete(User user);
         /// <summary>
         /// Обновление имени пользователя по Id
         /// </summary>

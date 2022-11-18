@@ -110,14 +110,14 @@ namespace EF_Console.Tests.Services
             var testListGenre2 = _testBookService.GetBooksByGenreAndDate("test2", 1500, 1600);
 
             //Assert
-            Assert.AreEqual(4, testListGenre1.Count);
-            CollectionAssert.Contains(testListGenre1, book1);
+            Assert.AreEqual(3, testListGenre1.Count);
+            CollectionAssert.DoesNotContain(testListGenre1, book1);
             CollectionAssert.Contains(testListGenre1, book2);
             CollectionAssert.Contains(testListGenre1, book4);
             CollectionAssert.Contains(testListGenre1, book6);
 
-            Assert.AreEqual(2, testListGenre2.Count);
-            CollectionAssert.Contains(testListGenre2, book5);
+            Assert.AreEqual(1, testListGenre2.Count);
+            CollectionAssert.DoesNotContain(testListGenre2, book5);
             CollectionAssert.Contains(testListGenre2, book6);
             CollectionAssert.DoesNotContain(testListGenre2, book3);
         }
