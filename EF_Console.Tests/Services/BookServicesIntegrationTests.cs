@@ -10,7 +10,6 @@ namespace EF_Console.Tests.Services
     public class BookServicesIntegrationTests
     {
         private readonly string testConnectionString = ConnectionString.TESTING;
-
         private BookService _testBookService;
 
         [OneTimeSetUp]

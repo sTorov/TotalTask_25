@@ -9,7 +9,6 @@ namespace EF_Console.Tests.Repository
     public class UserRepositoryIntegrationTests
     {
         private readonly string testConnectionString = ConnectionString.TESTING;
-        private User testUser;
         private UserRepository userRepository;
 
         [OneTimeSetUp]
@@ -22,6 +21,9 @@ namespace EF_Console.Tests.Repository
                 db.Database.EnsureCreated();
             }
         }
+
+        
+        private User testUser;
 
         [SetUp]
         public void AllTestsInitialization()
@@ -36,53 +38,45 @@ namespace EF_Console.Tests.Repository
 
             Assert.IsNotNull(userList);
             CollectionAssert.DoesNotContain(userList, testUser);
-            
-            userRepository.Add(testUser);
+
+            testUser.Id = userRepository.Add(testUser);
 
             userList = userRepository.FindAll();
-            testUser.Id = userRepository.GetIdByEmailAndName(testUser.Name, testUser.Email);
-
             CollectionAssert.Contains(userList, testUser);
 
             userRepository.Delete(testUser);
 
             userList = userRepository.FindAll();
-
             CollectionAssert.DoesNotContain(userList, testUser);
         }
 
         [Test]
         public void FindById_MustFindUserInBase()
-        {           
-            userRepository.Add(testUser);
-
-            testUser.Id = userRepository.GetIdByEmailAndName(testUser.Name, testUser.Email); 
+        {
+            testUser.Id = userRepository.Add(testUser);
 
             var findUser = userRepository.FindById(testUser.Id);
-
             Assert.AreEqual(findUser, testUser);
 
             userRepository.Delete(testUser);
-            findUser = userRepository.FindById(testUser.Id);
 
+            findUser = userRepository.FindById(testUser.Id);
             Assert.IsNull(findUser);
         }
 
         [TestCase("newTest")]
         public void UpdateUserNameById_MustChangeUserNameInBase(string newName)
         {
-            userRepository.Add(testUser);
-
-            testUser.Id = userRepository.GetIdByEmailAndName(testUser.Name, testUser.Email);
+            testUser.Id = userRepository.Add(testUser);
 
             userRepository.UpdateUserNameById(testUser.Id, newName);
-            var findUser = userRepository.FindById(testUser.Id);
 
+            var findUser = userRepository.FindById(testUser.Id);
             Assert.AreEqual(findUser.Name, newName);
 
             userRepository.Delete(findUser);
-            findUser = userRepository.FindById(testUser.Id);
 
+            findUser = userRepository.FindById(testUser.Id);
             Assert.IsNull(findUser);
         }
     }

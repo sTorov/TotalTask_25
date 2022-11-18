@@ -1,6 +1,7 @@
 ﻿using EF_Console.Entity;
 using EF_Console.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 namespace EF_Console.Repository
 {
@@ -21,7 +22,13 @@ namespace EF_Console.Repository
             using (var db = new Context(_connect))
             {
                 db.Books.Add(book);
-                return db.SaveChanges();
+                db.SaveChanges();
+
+                return db.Books.AsNoTracking()
+                                .Where(b => b.Title == book.Title &&
+                                          b.Year_of_issue == book.Year_of_issue)
+                                .Select(b => b.Id)
+                                .FirstOrDefault();
             }
         }
 
@@ -77,16 +84,6 @@ namespace EF_Console.Repository
                                     b.Year_of_issue >= fromYear &&
                                     b.Year_of_issue <= toYear)
                                 .ToList();
-            }
-        }
-
-        public int GetIdByTitleAndYear(string title, DateTime date)
-        {
-            using (var db = new Context(_connect))
-            {
-                return db.Books.AsNoTracking().
-                    Where(b => b.Title == title && b.Year_of_issue == date)
-                    .Select(b => b.Id).FirstOrDefault();
             }
         }
 
@@ -175,6 +172,7 @@ namespace EF_Console.Repository
         /// <summary>
         /// Добавление новой книги в БД
         /// </summary>
+        /// <returns>Возвращает Id добавленной книги</returns>
         int Add(Book book);
         /// <summary>
         /// Удаление книги из БД
@@ -216,10 +214,6 @@ namespace EF_Console.Repository
         /// Проверка автора книги
         /// </summary>
         bool CheckByAuthorAndTitle(Author author, string title);
-        /// <summary>
-        /// Получение Id по названию книги и году выпуска
-        /// </summary>
-        int GetIdByTitleAndYear(string title, DateTime date);
         /// <summary>
         /// Получение книги, выпущеной позднее всех
         /// </summary>

@@ -45,7 +45,7 @@ namespace EF_Console
             Console.WriteLine();
             service.AllBookOrderByDiscendingDate(true);
 
-
+            Console.ReadKey();
         }
 
         /// <summary>

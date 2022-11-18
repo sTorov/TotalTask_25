@@ -24,5 +24,18 @@ namespace EF_Console.Configuration
         {
             optionsBuilder.UseSqlServer(_connectionString);
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Genre>().HasIndex(p => p.Genre_name).IsUnique();
+            
+            modelBuilder.Entity<User>().HasIndex(p => p.Email).IsUnique();
+
+            modelBuilder.Entity<Book>().HasIndex(p => new { p.Title, p.Year_of_issue }).IsUnique();
+
+            modelBuilder.Entity<Author>().HasIndex(p => 
+                                new { p.FirstName, p.SecondName, p.LastName }
+                                ).IsUnique();
+        }
     }
 }

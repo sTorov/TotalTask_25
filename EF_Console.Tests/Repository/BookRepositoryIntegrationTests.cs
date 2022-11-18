@@ -9,11 +9,10 @@ namespace EF_Console.Tests.Repository
     public class BookRepositoryIntegrationTests
     {
         private readonly string testConnectionString = ConnectionString.TESTING;
-        private Book testBook;
         private BookRepository bookRepository;
 
         [OneTimeSetUp]
-        public void StartIniitialization()
+        public void OneTimeSetUp()
         {
             bookRepository = new BookRepository(testConnectionString);
             using (var db = new Context(testConnectionString))
@@ -23,8 +22,11 @@ namespace EF_Console.Tests.Repository
             }
         }
 
+
+        private Book testBook;
+
         [SetUp]
-        public void AllTestsInitialization()
+        public void SetUp()
         {
             testBook = new Book { Title = "Test", Year_of_issue = new DateTime(2000, 12, 12) };
         }
@@ -37,35 +39,29 @@ namespace EF_Console.Tests.Repository
             Assert.IsNotNull(bookList);
             CollectionAssert.DoesNotContain(bookList, testBook);
 
-            bookRepository.Add(testBook);
+            testBook.Id = bookRepository.Add(testBook);
 
             bookList = bookRepository.FindAll();
-            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook.Title, testBook.Year_of_issue);
-
             CollectionAssert.Contains(bookList, testBook);
 
             bookRepository.Delete(testBook);
 
             bookList = bookRepository.FindAll();
-
             CollectionAssert.DoesNotContain(bookList, testBook);
         }
 
         [Test]
         public void FindById_MustFindBookInBase()
         {
-            bookRepository.Add(testBook);
+            testBook.Id = bookRepository.Add(testBook);
 
-            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook.Title, testBook.Year_of_issue);
-
-            var findUser = bookRepository.FindById(testBook.Id);
-
-            Assert.AreEqual(findUser, testBook);
+            var findBook = bookRepository.FindById(testBook.Id);
+            Assert.AreEqual(findBook, testBook);
 
             bookRepository.Delete(testBook);
-            findUser = bookRepository.FindById(testBook.Id);
 
-            Assert.IsNull(findUser);
+            findBook = bookRepository.FindById(testBook.Id);
+            Assert.IsNull(findBook);
         }
 
         [Test]
@@ -73,18 +69,15 @@ namespace EF_Console.Tests.Repository
         {
             var newDate = new DateTime(2022, 01, 01);
 
-            bookRepository.Add(testBook);
-
-            testBook.Id = bookRepository.GetIdByTitleAndYear(testBook.Title, testBook.Year_of_issue);
-
+            testBook.Id = bookRepository.Add(testBook);
             bookRepository.UpdateYearOfIssueById(testBook.Id, newDate);
-            var findBook = bookRepository.FindById(testBook.Id);
 
+            var findBook = bookRepository.FindById(testBook.Id);
             Assert.AreEqual(findBook.Year_of_issue, newDate);
 
             bookRepository.Delete(findBook);
-            findBook = bookRepository.FindById(testBook.Id);
 
+            findBook = bookRepository.FindById(testBook.Id);
             Assert.IsNull(findBook);
         }
     }

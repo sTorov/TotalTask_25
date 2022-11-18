@@ -1,4 +1,6 @@
-﻿namespace EF_Console.Entity
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EF_Console.Entity
 {
     /// <summary>
     /// Сущность жанра

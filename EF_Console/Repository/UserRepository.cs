@@ -21,7 +21,11 @@ namespace EF_Console.Repository
             using(var db = new Context(_connect))
             {
                 db.Users.Add(user);
-                return db.SaveChanges();
+                db.SaveChanges();
+                return db.Users.AsNoTracking()
+                        .Where(u => u.Email == user.Email)
+                        .Select(u => u.Id)
+                        .FirstOrDefault();
             }
         }
 
@@ -53,16 +57,6 @@ namespace EF_Console.Repository
             using (var db = new Context(_connect))
             {
                 return db.Users.FirstOrDefault(user => user.Id == id);
-            }
-        }
-
-        public int GetIdByEmailAndName(string name, string email)
-        {
-            using(var db = new Context(_connect))
-            {
-                return db.Users.AsNoTracking()
-                    .Where(u => u.Email == email && u.Name == name)
-                    .Select(u => u.Id).FirstOrDefault();
             }
         }
 
@@ -107,9 +101,5 @@ namespace EF_Console.Repository
         /// Обновление имени пользователя по Id
         /// </summary>
         int UpdateUserNameById(int id, string newName);
-        /// <summary>
-        /// Получение Id по почтовому адресу и имени пользователя
-        /// </summary>
-        int GetIdByEmailAndName(string name, string email);
     }
 }
