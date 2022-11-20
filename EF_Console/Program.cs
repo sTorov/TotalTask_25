@@ -34,6 +34,9 @@ namespace EF_Console
             service.CheckUserIsBook(1, 2, true);
 
             Console.WriteLine();
+            service.CheckBookInHand(3, true);
+
+            Console.WriteLine();
             service.CountBooksOnUser(4, true);
 
             Console.WriteLine();

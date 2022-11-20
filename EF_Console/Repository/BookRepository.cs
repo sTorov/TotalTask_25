@@ -155,11 +155,27 @@ namespace EF_Console.Repository
             }
         }
 
-        public Book FindByTitle(string title)
+        public bool CheckByTitle(string title)
         {
             using(var db = new Context(_connect))
             {
-                return db.Books.FirstOrDefault(b => b.Title == title);
+                return db.Books.Any(b => b.Title == title);
+            }
+        }
+
+        public bool CheckUserIdIsNull(int bookId)
+        {
+            using(var db = new Context(_connect))
+            {
+                int? userId = db.Books.AsNoTracking()
+                    .Where(b => b.Id == bookId)
+                    .Select(b => b.UserId)
+                    .FirstOrDefault();
+
+                if (userId == null)
+                    return false;
+
+                return true;
             }
         }
     }
@@ -180,7 +196,7 @@ namespace EF_Console.Repository
         /// <summary>
         /// Получение книги по Id
         /// </summary>
-        Book FindByTitle(string title);
+        bool CheckByTitle(string title);
         /// <summary>
         /// Получение количества книг, написанных указанным автором
         /// </summary>
@@ -197,6 +213,10 @@ namespace EF_Console.Repository
         /// Проверка автора книги
         /// </summary>
         bool CheckByAuthorAndTitle(Author author, string title);
+        /// <summary>
+        /// Проверка значения UserId на NULL
+        /// </summary>
+        bool CheckUserIdIsNull(int bookId);
         /// <summary>
         /// Получение книги, выпущеной позднее всех
         /// </summary>

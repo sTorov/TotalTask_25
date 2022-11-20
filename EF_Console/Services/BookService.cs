@@ -147,7 +147,7 @@ namespace EF_Console.Services
         {
             try
             {
-                if (bookRepository.FindByTitle(title) == null)
+                if (!bookRepository.CheckByTitle(title))
                     throw new Exception($"CheckBookByTitleAndAuthor: Книга [{title}] не найдена!");
 
                 var author = authorRepository.FindByFullName(firstName, secondName, lastName);
@@ -189,6 +189,31 @@ namespace EF_Console.Services
 
                 if(printResult)
                     Console.WriteLine($"Проверка: Пользователь -> Книга\n{user.Name} ->  {book.Title}  >>  Результат: {check}");
+
+                return check;
+            }
+            catch (Exception e)
+            {
+                Helper.ErrorPrint(e.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Проверка, находится ли указанная книга на руках у какого-либо пользователя
+        /// </summary>
+        public bool CheckBookInHand(int bookId, bool printResult = false)
+        {
+            try
+            {
+                var book = bookRepository.FindById(bookId);
+                if (book == null)
+                    throw new Exception($"Книга с Id [{bookId}] не найдена!");
+
+                bool check = bookRepository.CheckUserIdIsNull(bookId);
+
+                if(printResult)
+                    Console.WriteLine($"Проверка: Книга на руках у пользователя\n{book.Title}  >>  Результат: {check}");
 
                 return check;
             }

@@ -374,5 +374,54 @@ namespace EF_Console.Tests.Services
             Assert.AreEqual(testListBookOrderByDateDiscending[1].Year_of_issue, book1.Year_of_issue);
             Assert.AreEqual(testListBookOrderByDateDiscending[2].Year_of_issue, book2.Year_of_issue);
         }
+
+        [Test]
+        public void CheckBookInHand_MustReturnCorrectValue()
+        {
+            //Arrange
+            var book1 = new Book { Title = "book1", Year_of_issue = new DateTime(2000, 01, 01), Id = 4 };
+            var book2 = new Book { Title = "book2", Year_of_issue = new DateTime(2000, 01, 01), Id = 6 };
+            var book3 = new Book { Title = "book3", Year_of_issue = new DateTime(2000, 01, 01), Id = 10 };
+
+            var user1 = new User { Name = "test", Id = 4 };
+
+            using (var db = new Context(testConnectionString))
+            {
+                using (var trans = db.Database.BeginTransaction())
+                {
+                    db.Users.Add(user1);
+
+                    db.Database.ExecuteSqlInterpolated($"set identity_insert dbo.Users on;");
+                    db.SaveChanges();
+                    db.Database.ExecuteSqlInterpolated($"set identity_insert dbo.Users off;");
+
+                    trans.Commit();
+                }
+
+                using (var trans = db.Database.BeginTransaction())
+                {
+                    db.Books.AddRange(book1, book2, book3);
+
+                    book1.User = user1;
+                    book2.User = user1;
+
+                    db.Database.ExecuteSqlInterpolated($"set identity_insert dbo.Books on;");
+                    db.SaveChanges();
+                    db.Database.ExecuteSqlInterpolated($"set identity_insert dbo.Books off;");
+
+                    trans.Commit();
+                }                
+            }
+
+            //Act
+            bool testCheckBookInHand_1 = _testBookService.CheckBookInHand(book1.Id);
+            bool testCheckBookInHand_2 = _testBookService.CheckBookInHand(book2.Id);
+            bool testCheckBookInHand_3 = _testBookService.CheckBookInHand(book3.Id);
+
+            //Assert
+            Assert.AreEqual(testCheckBookInHand_1, true);
+            Assert.AreEqual(testCheckBookInHand_2, true);
+            Assert.AreEqual(testCheckBookInHand_3, false);
+        }
     }
 }

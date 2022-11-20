@@ -22,6 +22,7 @@
                 if (book.Id != Id) return false;
                 if (book.Title != Title) return false;
                 if (book.Year_of_issue != Year_of_issue) return false;
+
                 return true;
             }
             return false;

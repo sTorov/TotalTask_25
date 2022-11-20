@@ -14,9 +14,9 @@
 
         public override bool Equals(object? obj)
         {
-            if(obj is Author author)
+            if (obj is Author author)
             {
-                if(author.Id != Id) return false;
+                if (author.Id != Id) return false;
                 if (author.FirstName != FirstName) return false;
                 if (author.SecondName != SecondName) return false;
                 if (author.LastName != LastName) return false;
